@@ -17,9 +17,9 @@ function pathMatchRoute(route) {
       <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
         <div>
           <img
-            src="https://static.rdc.moveaws.com/images/logos/rdc-logo-default.svg"
+            src="https://revolutionplusproperty.com/img/logo-cropped.054b307a.png"
             alt="logo"
-            className="h-5 cursor-pointer"
+            className="h-15 w-15 cursor-pointer"
             onClick={() => Navigate('/')}
           />
         </div>
@@ -46,9 +46,9 @@ function pathMatchRoute(route) {
             <li
               className={`cursor-pointer py-3 text-sm font-semibold
                  text-gray-400 border-b-[3px] border-b-transparent ${
-                   pathMatchRoute('/Sign-In') && 'text-black border-b-red-500'
+                   pathMatchRoute('/SignIn') && 'text-black border-b-red-500'
                  }`}
-              onClick={() => Navigate('/Sign-In')}
+              onClick={() => Navigate('/SignIn')}
             >
               Sign In
             </li>

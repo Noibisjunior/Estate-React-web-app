@@ -30,9 +30,9 @@ export default function ForgotPassword() {
               bg-white border-gray-300 rounded transition ease-in-out mb-6"
             />
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
-              <p className="mb-6">
-                Don't have an account?
-                <Link
+              {/* <p className="mb-6">
+                Don't have an account? */}
+                {/* <Link
                   to="/sign-up"
                   className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1"
                 >
@@ -46,7 +46,7 @@ export default function ForgotPassword() {
                 >
                   sign in instead
                 </Link>
-              </p>
+              </p> */}
             </div>
             <button
               type="submit"
