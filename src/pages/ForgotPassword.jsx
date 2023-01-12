@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import OAuth from '../Components/OAuth';
+import { useNavigate } from 'react-router-dom';
 
 export default function ForgotPassword() {
+  const Navigate = useNavigate();
   const [email, setEmail] = useState("");
   function onChange(e) {
     // console.log(e.target.value);
@@ -30,23 +32,18 @@ export default function ForgotPassword() {
               bg-white border-gray-300 rounded transition ease-in-out mb-6"
             />
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
-              {/* <p className="mb-6">
-                Don't have an account? */}
-                {/* <Link
-                  to="/sign-up"
-                  className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1"
+                  <p
+                    className=" text-black-600 cursor-pointer hover:text-red-700 transition duration-200 ease-in-out ml-1"
+                    onClick={() => Navigate('/SignUp')}
+                  >
+                    SignUp instead
+                  </p>
+                <p
+                  className="mb-6 text-blue-600  cursor-pointer hover:text-blue-800 transition duration-200 ease-in-out ml-1"
+                  onClick={() => Navigate('/SignIn')}
                 >
-                  Register
-                </Link>
-              </p>
-              <p>
-                <Link
-                  to="/sign-in"
-                  className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1"
-                >
-                  sign in instead
-                </Link>
-              </p> */}
+                  SignIn instead
+                </p>
             </div>
             <button
               type="submit"

@@ -36,7 +36,7 @@ try {
   const user = userCredential.user
   // console.log(user);
   const formDataCopy = {...formData}
-  delete formDataCopy.password
+  delete formDataCopy.password;
   formDataCopy.timestamp = serverTimestamp()
   await setDoc(doc (db,"users",user.uid),formDataCopy)
   toast.success("sign up was successful")
@@ -100,21 +100,19 @@ try {
             </div>
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
               <p className="mb-6">
-                 have an account?
-                {/* <Link
-                  to="/sign-in"
-                  className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1"
+                have an account?
+                <span
+                  className="text-black-600 cursor-pointer hover:text-red-700 transition duration-200 ease-in-out ml-1"
+                  onClick={() => Navigate('/SignIn')}
                 >
-                  SignIn
-                </Link> */}
+                  Sign In
+                </span>
               </p>
-              <p>
-                {/* <Link
-                  to="/forgot-password"
-                  className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out ml-1"
-                >
-                  Forgot password?
-                </Link> */}
+              <p
+                className="text-blue-600  cursor-pointer hover:text-blue-800 transition duration-200 ease-in-out ml-1"
+                onClick={() => Navigate('/ForgotPassword')}
+              >
+                ForgotPassword
               </p>
             </div>
             <button

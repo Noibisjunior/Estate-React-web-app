@@ -63,17 +63,17 @@ export default function SignIn() {
                 />
               )}
               <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
-                <p
-                  className="mb-6 text-black-600"
-                  onClick={() => Navigate('/SignUp')}
-                >
-                  Don't Have an Account,Please
-                  <span className=" text-black-600 cursor-pointer hover:text-red-700 transition duration-200 ease-in-out ml-1">
+                <p className="mb-6 text-black-600">
+                  Don't Have an Account,
+                  <span
+                    className=" text-black-600 cursor-pointer hover:text-red-700 transition duration-200 ease-in-out ml-1"
+                    onClick={() => Navigate('/SignUp')}
+                  >
                     Register
                   </span>
                 </p>
                 <p
-                  className="mb-6 text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out ml-1"
+                  className="mb-6 text-blue-600  cursor-pointer hover:text-blue-800 transition duration-200 ease-in-out ml-1"
                   onClick={() => Navigate('/ForgotPassword')}
                 >
                   Forgot Password ?
