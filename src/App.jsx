@@ -9,6 +9,7 @@ import Offers from './pages/Offers'
 import Header from './Components/Header'
 import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import PrivateRoute from './Components/PrivateRoute'
 
 export default function App() {
   return (
@@ -17,15 +18,17 @@ export default function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/Profile" element={<Profile />} />
+          <Route path='/profile' element={<PrivateRoute/>}> 
+            <Route path="/Profile" element={<Profile />} />
+          </Route>
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route path="/Offers" element={<Offers />} />
         </Routes>
       </Router>
-      <ToastContainer       
-       position="top-right"
+      <ToastContainer
+        position="top-right"
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
