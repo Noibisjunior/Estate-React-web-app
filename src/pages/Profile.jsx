@@ -26,9 +26,9 @@ setFormData((prevState) => ({
   [e.target.id] : e.target.value // set the prev change to the current change
 }))
 
- async function onSubmit(){ //This function is returning a promise that is the reason why i use asyn-await
+ async function onSubmit() { //This function is returning a promise that is the reason why i use asyn-await
 try {
-  if(auth.currentUser.displayName !== name){
+  if(auth.currentUser.displayName !== name){ //checks if the change happens
     //update displayName in firebase auth
     await updateProfile(auth.currentUser,{ // we need to use await becausse it returns a promise
       displayName : name
