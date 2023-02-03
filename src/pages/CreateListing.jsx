@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import Spinner from '../Components/spinner';
 import { getAuth, } from 'firebase/auth';
-import { getStorage } from 'firebase/storage'
-import { addDoc, serverTimestamp } from 'firebase/firestore';
+import { getStorage,ref,uploadBytesResumable,getDownloadURL } from 'firebase/storage'
+import { addDoc, serverTimestamp,collection } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
+import {v4 as uuidv4} from "uuid"
 
 
 export default async function CreateListing() {
 const auth = getAuth()
 const Navigate = useNavigate()
 
-  const [geoLocationEnabled,setGeoLocationEnabled] = useState(false)
+  const [geoLocationEnabled,setGeoLocationEnabled] = useState(true)
   const [Loading,setLoading] = useState(false)
   const [formData, setFormData] = useState({
     type: 'rent',
@@ -29,7 +30,6 @@ const Navigate = useNavigate()
     latitude: 0,
     longitude:0,
     images:{}
-
   });
   const {
     type,
@@ -74,74 +74,105 @@ const Navigate = useNavigate()
 
   //submitting the form to the database
 async function onSubmit(e){
-  e.preventDefault()
-  setLoading(true) //changing the state of the form after submitting
-  if(+discountedPrice >= +regularPrice){
-    setLoading(false)
-    toast.error("Discounted price needs to be less than regular price")
-    return
+  e.preventDefault();
+  setLoading(true); //changing the state of the form after submitting
+  if (+discountedPrice >= +regularPrice) {
+    setLoading(false);
+    toast.error('Discounted price needs to be less than regular price');
+    return;
   }
-  if(Image.length > 6){
-    setLoading(false)
-    toast.error("Maximum 6 images are allowed")
-    return
+  if (Image.length > 6) {
+    setLoading(false);
+    toast.error('Maximum 6 images are allowed');
+    return;
   }
   //setting up the geoLocation
-  let geoLocation = {}
-  let location
-  if(geoLocationEnabled){
-    const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json ? address = ${address} & key=${process.env.name}`)
-    const data = await response.json()
+  let geoLocation = {};
+  let location;
+  if (geoLocationEnabled) {
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+    );
+    const data = await response.json();
     console.log(data);
-    geoLocation.lat = data.results[0] . geometry.location.lat ?? 0
-    geoLocation.long = data.results[0] . geometry.location.long ?? 0
+    geoLocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+    geoLocation.long = data.results[0]?.geometry.location.lng ?? 0;
 
-    Location = data.status === "ZERO_RESULTS" && undefined
-    if(location === undefined ){
-      setLoading(false)
-      toast.error("please provide a correct address")
-      return
+    location = data.status === 'ZERO_RESULTS' && undefined;
+
+    if (location === undefined) {
+      setLoading(false);
+      toast.error('please provide a correct address');
+      return;
     }
+  } else {
+    geoLocation.lat = latitude;
+    geoLocation.lng = longitude;
   }
-  else{
-    geoLocation.lat = latitude
-    geoLocation.long = longitude
+  //creating a functionality that will upload all images to the database
+  async function storeImage(image) {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage();
+      const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+      const storageRef = ref(storage, filename);
+      const uploadTask = uploadBytesResumable(storageRef, image);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+            case 'paused':
+              console.log('Upload is paused');
+              break;
+            case 'running':
+              console.log('Upload is running');
+              break;
+          }
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          reject(error);
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
   }
   const imgUrls = await Promise.all(
-    [...images].map((image) => StoreImage(image))
+    [...images].map((image) => storeImage(image))
   ).catch((error) => {
-    setLoading(false)
-    toast.error("images not uploaded")
-    return
-  })
-  console.log(imgUrls);
-  }
-//creating a functionality that will upload all images to the database
-async function StoreImage (image){
-  return new Promise((resolve,reject) => {
-    const storage = getStorage() //initializing the getstorage method
-    const fileName = `${auth.currentUser.uid} - ${Image.name} - ${uuidv4()}`
-    const StorageRef = ref(storage,fileName)
-    const uploadTask = uploadBytesResumable(StorageRef,image)
-  })
-}
+    setLoading(false);
+    toast.error('images not uploaded');
+    return;
+  });
+  // console.log(imgUrls);
 
-const formDataCopy = {
-  ...formData, //instance of formdata state
-  imgUrls,
-  geoLocation,
-  timestamp: serverTimestamp(),
-  useRef: auth.currentUser.uid
-}
-delete formDataCopy.images
-!formDataCopy.offer && delete formDataCopy.discountedPrice
-delete formDataCopy.latitude
-delete formDataCopy.longitude
+  const formDataCopy = {
+    ...formData, //instance of formdata state
+    imgUrls,
+    geoLocation,
+    timestamp: serverTimestamp(),
+    useRef: auth.currentUser.uid, //getting info of the user
+  };
+  delete formDataCopy.images;
+  !formDataCopy.offer && delete formDataCopy.discountedPrice;
+  delete formDataCopy.latitude;
+  delete formDataCopy.longitude;
 
-const docRef = await addDoc(collection(db,"listings"),formDataCopy)
-setLoading(false)
-toast.success("listing created")
-Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
+  const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
+  setLoading(false);
+  toast.success('listing created');
+  Navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+}
 
 
    if (Loading) {
@@ -149,7 +180,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
    }
   
   return (
-    <main className="max w-md px-2 mx-auto">
+    <main className="max-w-md px-2 mx-auto">
       <h1 className="text-3xl text-center mt-6 font-bold">Create a Listing </h1>
 
       <form onSubmit={onSubmit}>
@@ -160,7 +191,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
             id="type"
             value="sell"
             onClick={onChange}
-            className={`px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           type === 'rent' ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -173,7 +204,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
             id="type"
             value="rent"
             onClick={onChange}
-            className={`px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           type === 'sell' ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -239,7 +270,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
             id="parking"
             value={true}
             onClick={onChange}
-            className={`px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={` mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           !parking ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -252,7 +283,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
             id="parking"
             value={false}
             onClick={onChange}
-            className={`px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           parking ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -269,7 +300,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
             id="furnished"
             value={true}
             onClick={onChange}
-            className={`px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           !furnished ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -282,7 +313,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
             id="type"
             value="sale"
             onClick={onChange}
-            className={`px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -362,7 +393,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
             id="offer"
             value={true}
             onClick={onChange}
-            className={`px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           !offer ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -375,7 +406,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
             id="offer"
             value={false}
             onClick={onChange}
-            className={`px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           offer ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -457,6 +488,7 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
                 focus:border-slate-600"
            '
           />
+          </div>
           <button onSubmit={onSubmit}
             type="submit"
             className="mb-6 w-full px-7 py-3 bg-blue-600 text-white
@@ -464,9 +496,8 @@ Navigate(`/category/${formDataCopy.type}/${docRef.id}`)
           focus:bg-blue-700 focus:shadow-lg active:bg-red-800
           active:shadow-lg transition duration-150 ease-out mt-6"
           >
-            Submit
+            Create Listing
           </button>
-        </div>
       </form>
     </main>
   );

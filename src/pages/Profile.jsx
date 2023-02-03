@@ -1,5 +1,5 @@
 import { getAuth, updateProfile } from 'firebase/auth';
-import { collection, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
+import { collection, getDocs,where, orderBy, query, updateDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -29,7 +29,7 @@ const [loading,setLoading] = useState(true);
       ...prevState, //keep the previous change
       [e.target.id]: e.target.value, // set the prev change to the current change
     }));
-
+  }
     async function onSubmit() {
       //This function is returning a promise that is the reason why i use asyn-await
       try {
@@ -53,12 +53,11 @@ const [loading,setLoading] = useState(true);
         toast.error('could not update the profile details');
       }
     }
-  }
+  
 
-  useEffect(() => {
+  useEffect(() => { //using the useEffect hook to fetch the data from the database
     async function fetchUserListings() {
-      setLoading(false)
-      const listingRef = collection(db, 'listings');
+      const listingRef = collection(db, 'listings'); //address of the listing
       const q = query(listingRef,where("userRef","==",auth.currentUser.uid),orderBy("timestamp","desc"))//query(listingRef,where("userRef
       const querySnap = await getDocs(q) //passing the query snapshot
       let listings = []
@@ -72,7 +71,8 @@ const [loading,setLoading] = useState(true);
       setLoading(false)
     }
     fetchUserListings(); //calling fetchUserListings
-  }, [auth.currentUser.uid]); //the useeffect is triggered after the user listings have been fetched
+  }, [auth.currentUser.uid]);
+   //the useeffect is triggered after the user listings have been fetched
   return (
     <>
       <section
@@ -144,7 +144,7 @@ const [loading,setLoading] = useState(true);
           shadow-md hover:bg-blue-700 transition duration 150 ease-in-out hover:shadow-lg active:bg-blue-800"
           >
             <Link
-              to="/createListing"
+              to="/CreateListing"
               className="flex
             justify-center items-center"
             >
@@ -154,15 +154,17 @@ const [loading,setLoading] = useState(true);
           </button>
         </div>
       </section>
-      <div className='max-w-6xl px-3 mt-6 mx-auto'>
+      <div className="max-w-6xl px-3 mt-6 mx-auto">
         {!loading && listing.length > 0 && (
           <>
-            <h2 className='text 2xl text-center font-semibold'>My Listing</h2>
-            <ul>
+            <h2 className="text 2xl text-center mb-6 font-semibold">My Listing</h2>
+            <ul className="sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mt-6 mb-6">
               {listing.map((listings) => (
-                <ListingItem key=
-                {listing.id} 
-                id={listing.id}
+                <ListingItem
+                  key={ //a new component
+                    listing.id
+                  }
+                  id={listing.id}
                   listing={listings.data}
                 /> //passing the props to the list item.
               ))}
@@ -172,4 +174,4 @@ const [loading,setLoading] = useState(true);
       </div>
     </>
   );
-}
+              }
