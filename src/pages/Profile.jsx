@@ -86,14 +86,14 @@ export default function Profile() {
     fetchUserListings(); //calling fetchUserListings
   }, [auth.currentUser.uid]);
   //the useeffect is triggered after the user listings have been fetched
-  
+
   async function onDelete(listingID) {
     if (window.confirm('Are you sure you want to delete')) {
       await deleteDoc(doc(db, 'listings', listingID));
       const updatedListings = listing.filter(
         (listing) => listing.id !== listingID
       );
-      setListings(updatedListings);
+      setListings(updatedListings)
       toast.success('successfully deleted the listing');
     }
   }
