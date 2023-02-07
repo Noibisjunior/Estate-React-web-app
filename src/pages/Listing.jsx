@@ -1,5 +1,6 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from 'firebase';
+import { FaShare } from 'recat-icons/fa';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Spinner from '../Components/spinner';
@@ -17,6 +18,7 @@ export default function Listing() {
   const params = useParams();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [shareLinkCopied, setShareLinkCopied] = useState(false);
   SwiperCore.use([AutoPlay, Navigation, Pagination, EffectFade]);
 
   useEffect(() => {
@@ -58,6 +60,25 @@ export default function Listing() {
           </SwiperSlide>
         ))}
       </Swiper>
+      <div
+        className="fixed top-[13%] right-[3%] z-10 bg-white 
+      cursor-pointer border-2 border-gray-400 rounded-full
+      w-12 h-12 flex justify-center items-center"
+        onClick={() => {
+          navigator.clipboard.writeText(window.location.href);
+          setShareLinkCopied(true);
+          setTimeout(() => {
+            setShareLinkCopied(false)
+          }, 2000);
+        }}
+      >
+        <FaShare className="text-lg text-slate-400" />
+      </div>
+      {
+        shareLinkCopied && <p className='fix top-[23%] right-[5%] font-semibold
+        border-2 border-gray-300 rounded-md
+        bg-white z-10 p-2'>Link Copied</p>
+      }
     </main>
   );
 }
