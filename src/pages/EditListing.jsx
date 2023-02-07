@@ -52,15 +52,16 @@ export default async function CreateListing() {
     longitude,
     images,
   } = formData; //destructuring formData
+const params = useParams();
 
   useEffect(() => {
     if (Listing && Listing.useRef !== auth.currentUser.uid) {
       toast.error('you cannot edit this listing');
       Navigate('/');
     }
-  }, []);
+  }, [auth.currentUser.uid,Listing,Navigate]);
 
-const params = useParams()
+
 
   useEffect(() => {
     setLoading(true)
