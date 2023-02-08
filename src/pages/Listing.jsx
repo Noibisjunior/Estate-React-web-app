@@ -1,6 +1,7 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from 'firebase';
 import { getAuth } from 'firebase/auth';
+import {MapContainer,Marker,Popup,TileLayer} from 'react-leaflet'
 import {
   FaShare,
   FaMapMarkerAlt,
@@ -183,7 +184,25 @@ export default function Listing() {
           )}{' '}
           //passing props to the contact component
         </div>
-        <div className="bg-green-200 w-full h-[200px] lg-[400px] z-10 overflow-x-hidden"></div>
+        <div
+          className=" w-full h-[200px] md:h-[400px] 
+        z-10 overflow-x-hidden mt-6 md:mt-0 md:ml-2"
+        >
+          <MapContainer center={[listing.geoLocation.lat,listing.geoLocation.lng]} zoom={13} 
+          scrollWheelZoom={false}
+          style={{height:"100%",width:"100%"}}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position= {[listing.geoLocation.lat,listing.geoLocation.lng]}>
+              <Popup>
+                {listing.address}
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </div>
       </div>
     </main>
   );
