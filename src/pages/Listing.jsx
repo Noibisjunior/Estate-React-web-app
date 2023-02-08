@@ -1,5 +1,6 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from 'firebase';
+import { getAuth } from 'firebase/auth';
 import {
   FaShare,
   FaMapMarkerAlt,
@@ -21,12 +22,16 @@ import SwiperCore, {
   Pagination,
 } from 'swiper';
 import 'swiper/css/bundle';
+import contact from '../Components/Contact';
 
 export default function Listing() {
+  const auth = getAuth();
   const params = useParams();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
+  const [contactLandLord, setContactLandLord] = useState(false);
+
   SwiperCore.use([AutoPlay, Navigation, Pagination, EffectFade]);
 
   useEffect(() => {
@@ -95,10 +100,11 @@ export default function Listing() {
       }
 
       <div
-        className="m-4 flex flex-col md:flex-row max-w-6xl lg:mx-auto p-4 rounded-lg 
+        className="m-4 flex flex-col md:flex-row max-w-6xl 
+        lg:mx-auto p-4 rounded-lg 
        shadow-lg bg-white lg:space-x-5"
       >
-        <div className="w-full h-[200px] lg-[400px]">
+        <div className="w-full">
           <p className="text-2xl font-bold mb-3 tetx-blue-900">
             {listing.name} - ${' '}
             {listing.offer ? listing.discountedPrice : listing.regularPrice}
@@ -134,7 +140,7 @@ export default function Listing() {
           </p>
           <ul
             className="flex items-center space-x-2 sm:space-x-10
-          text-sm font-semibold"
+          text-sm font-semibold mb-6"
           >
             <li className="flex items-center whitespace-nowrap">
               <FaBed className="text-lg mr-1" />
@@ -156,6 +162,26 @@ export default function Listing() {
               {+listing.furnished ? 'Furnished' : 'Not furnished'}
             </li>
           </ul>
+          {listing.userRef !== auth.currentUser?.uid && !contactLandLord && (
+            <div className=" mt-6 ">
+              <button
+                onClick={() => {
+                  setContactLandLord(false);
+                }}
+                className="px-7 py-3 bg-blue-600 text-white
+          font-medium text-sm uppercase rounded shadow-md
+          hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700
+          focus:shadow-lg w-full text-center transition 
+          duration-150 ease-out"
+              >
+                Contact LandLord
+              </button>
+            </div>
+          )}
+          {contactLandLord && (
+            <Contact userRef={listing.userRef} listing={listing} />
+          )}{' '}
+          //passing props to the contact component
         </div>
         <div className="bg-green-200 w-full h-[200px] lg-[400px] z-10 overflow-x-hidden"></div>
       </div>
