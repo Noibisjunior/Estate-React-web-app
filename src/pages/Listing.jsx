@@ -190,7 +190,7 @@ export default function Listing() {
         >
           <MapContainer center={[listing.geoLocation.lat,listing.geoLocation.lng]} zoom={13} 
           scrollWheelZoom={false}
-          style={{height:"100%",width:"100%"}}
+          style={{height:"100%", width:"100%"}}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
