@@ -11,7 +11,16 @@ body{
     color:#a8dadc
 }
 
-
+/* styling the progress-bar */
 .swiper-pagination-progressbar .swiper-pagination-progressbar-fill{
     background: #a8dadc !important;
+}
+
+/* removing the scrollBar */
+html::-webkit-scrollbar{
+    display: none;
+}
+
+html{
+    scrollbar-width: none;
 }
