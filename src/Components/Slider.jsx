@@ -27,7 +27,7 @@ export default function Slider() {
       const ListingRef = collection(db, 'listings');
       const q = query(ListingRef, orderBy('timestamp', 'desc'), limit(5));
       const docSnap = await getDoc(q);
-      let listings = [];
+      let listings = []
       docSnap.foreach((doc) => {
         return listings.push({
           id: doc.id,
