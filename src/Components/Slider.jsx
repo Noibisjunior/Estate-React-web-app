@@ -1,11 +1,10 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { collection, getDoc, limit, orderBy, query } from 'firebase/firestore';
 import { useEffect } from 'react';
 import Spinner from '../Components/spinner';
 import { db } from '../firebase';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import {
-  SwiperCore,
+import SwiperCore, {
   EffectFade,
   Autoplay,
   Navigation,
@@ -15,10 +14,14 @@ import 'swiper/css/bundle';
 import { useNavigate } from 'react-router';
 
 export default function Slider() {
-  const [listings, setlistings] = useState(null);
+
+  const [listing, setlisting] = useState(null);
   const [loading, setloading] = useState(true);
+
   SwiperCore.use([Autoplay, Navigation, Pagination]);
+
   const Navigate = useNavigate();
+
   useEffect(() => {
     async function fetchListings() {
       const ListingRef = collection(db, 'listings');
@@ -31,7 +34,7 @@ export default function Slider() {
           data: doc.data(),
         });
       });
-      setlistings(listings); //updating the listing variable
+      setlisting(listings); //updating the listing variable
       setloading(false);
     }
     fetchListings();
@@ -39,13 +42,13 @@ export default function Slider() {
   if (loading) {
     return <Spinner />;
   }
-  if (listings.length === 0) {
+  if (listing.length === 0) {
     //returning empty listings
     return <></>;
   }
 
   return (
-    listings && (
+    listing && (
       <>
         <Swiper
           slidesPerView={1}
@@ -55,7 +58,7 @@ export default function Slider() {
           modules={[EffectFade]}
           autoplay={{ delay: 3000 }}
         >
-          {listings.map((data, id) => {
+          {listing.map((data, id) => {
             //destructuring data and id
             <SwiperSlide
               key={id}

@@ -1,5 +1,5 @@
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from 'firebase';
+import { db } from '../firebase';
 import { getAuth } from 'firebase/auth';
 import {MapContainer,Marker,Popup,TileLayer} from 'react-leaflet'
 import {
@@ -9,16 +9,15 @@ import {
   FaBath,
   FaParking,
   FaChair,
-} from 'recat-icons/fa';
+} from 'react-icons/fa';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Spinner from '../Components/spinner';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 import SwiperCore, {
   EffectFade,
-  AutoPlay,
+  Autoplay,
   Navigation,
   Pagination,
 } from 'swiper';
@@ -33,7 +32,7 @@ export default function Listing() {
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const [contactLandLord, setContactLandLord] = useState(false);
 
-  SwiperCore.use([AutoPlay, Navigation, Pagination, EffectFade]);
+  SwiperCore.use([Autoplay, Navigation, Pagination, EffectFade]);
 
   useEffect(() => {
     async function fetchListing() {
