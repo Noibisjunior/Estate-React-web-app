@@ -147,6 +147,8 @@ async function onSubmit(e){
       );
     });
   }
+
+  //generate url for the images
   const imgUrls = await Promise.all(
     [...images].map((image) => storeImage(image))
   ).catch((error) => {
@@ -156,6 +158,7 @@ async function onSubmit(e){
   });
   // console.log(imgUrls);
 
+  //create another instance of formData
   const formDataCopy = {
     ...formData, //instance of formdata state
     imgUrls,
@@ -192,7 +195,7 @@ async function onSubmit(e){
             value="sell"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           type === 'rent' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
@@ -205,7 +208,7 @@ async function onSubmit(e){
             value="rent"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           type === 'sell' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
@@ -225,7 +228,7 @@ async function onSubmit(e){
           required
           className="w-full px-4 py-2 text-xl text-gray-700
       bg-white border border-gray-300 rounded transition duration-150
-      ease-in-out focus:text-gray-700 focus:text-gray-700
+      ease-in-out  focus:text-gray-700
       focus:bg-white focus:border-slate-600 mb-6"
         />
 
@@ -271,7 +274,7 @@ async function onSubmit(e){
             value={true}
             onClick={onChange}
             className={` mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           !parking ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
@@ -284,7 +287,7 @@ async function onSubmit(e){
             value={false}
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           parking ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
@@ -300,7 +303,7 @@ async function onSubmit(e){
             id="furnished"
             value={true}
             onClick={onChange}
-            className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
+            className={` px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           !furnished ? 'bg-white text-black' : 'bg-slate-600 text-white'
@@ -314,7 +317,7 @@ async function onSubmit(e){
             value="sale"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
@@ -332,7 +335,7 @@ async function onSubmit(e){
           required
           className="w-full px-4 py-2 text-xl text-gray-700
       bg-white border border-gray-300 rounded transition duration-150
-      ease-in-out focus:text-gray-700 focus:text-gray-700
+      ease-in-out  focus:text-gray-700
       focus:bg-white focus:border-slate-600 mb-6"
         />
         {!geoLocationEnabled && (
@@ -349,7 +352,7 @@ async function onSubmit(e){
                 max="90"
                 className="w-full px-4 py-2 text-xl text-gray-700
       bg-white border border-gray-300 rounded transition duration-150
-      ease-in-out focus:text-gray-700 focus:text-gray-700
+      ease-in-out  focus:text-gray-700
       focus:bg-white focus:border-slate-600 mb-6 text-center"
               />
             </div>
@@ -366,7 +369,7 @@ async function onSubmit(e){
                 max="180"
                 className="w-full px-4 py-2 text-xl text-gray-700
       bg-white border border-gray-300 rounded transition duration-150
-      ease-in-out focus:text-gray-700 focus:text-gray-700
+      ease-in-out  focus:text-gray-700
       focus:bg-white focus:border-slate-600 mb-6 text-center"
               />
             </div>
@@ -382,7 +385,7 @@ async function onSubmit(e){
           required
           className="w-full px-4 py-2 text-xl text-gray-700
       bg-white border border-gray-300 rounded transition duration-150
-      ease-in-out focus:text-gray-700 focus:text-gray-700
+      ease-in-out  focus:text-gray-700
       focus:bg-white focus:border-slate-600 mb-6"
         />
 
@@ -394,7 +397,7 @@ async function onSubmit(e){
             value={true}
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           !offer ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
@@ -407,7 +410,7 @@ async function onSubmit(e){
             value={false}
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           offer ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
