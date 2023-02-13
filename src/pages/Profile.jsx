@@ -27,7 +27,7 @@ export default function Profile() {
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
-  const { name, email } = formData;
+  const { name, email } = formData; //destructuring
   function onLogOut() {
     auth.signOut();
     Navigate('/');

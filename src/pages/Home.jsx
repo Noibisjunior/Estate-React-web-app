@@ -8,7 +8,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import Slider from '../Components/Slider';
+// import Slider from '../Components/Slider';
 import { Link } from 'react-router-dom';
 import ListingItem from '../Components/ListingItem';
 
@@ -111,7 +111,7 @@ export default function Home() {
 
   return (
     <div>
-      <Slider />
+      {/* <Slider /> */}
       <div className="max-w-6xl mx-auto pt-4 spa-y-6">
         {offerListing && offerListing.length > 0 && (
           <div className="m-2 mb-6">
