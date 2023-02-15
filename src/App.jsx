@@ -15,7 +15,7 @@ import EditListing from './pages/EditListing'
 import Listing from './pages/Listing'
 import Category from './pages/Category'
 
-export default function App() {
+ function App() {
   return (
     <>
       <Router>
@@ -31,10 +31,10 @@ export default function App() {
           <Route path="/Offers" element={<Offers />} />
           <Route path="/category/:categoryName" element={<Category />} />
           <Route path="/category/:categoryName/:listingId" element={<Listing />} />
-          <Route path="/CreateListing" element={<PrivateRoute />}>
+          <Route path="CreateListing" element={<PrivateRoute />}>
             <Route path="/CreateListing" element={<CreateListing />} />
           </Route>
-          <Route path="/editListing" element={<PrivateRoute />}>
+          <Route path="editListing" element={<PrivateRoute />}>
             <Route path="/editListing/:listingId" element={<EditListing/>} />
           </Route>
         </Routes>
@@ -55,3 +55,4 @@ export default function App() {
   );
 }
 
+export default App;
