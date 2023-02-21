@@ -10,7 +10,7 @@ import {
   FaParking,
   FaChair,
 } from 'react-icons/fa';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Spinner from '../Components/spinner';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -22,7 +22,7 @@ import SwiperCore, {
   Pagination,
 } from 'swiper';
 import 'swiper/css/bundle';
-import contact from '../Components/Contact';
+import Contact from '../Components/Contact';
 
 export default function Listing() {
   const auth = getAuth();
@@ -36,7 +36,7 @@ export default function Listing() {
 
   useEffect(() => {
     async function fetchListing() {
-      const docRef = doc(db, 'listing', params.listingId); //referencing the address in the firestore
+      const docRef = doc(db, 'listings', params.listingId); //referencing the address in the firestore
       const docSnap = await getDoc(docRef); //getting the data
       if (docSnap.exists()) {
         //if the document exist in the database
@@ -54,9 +54,9 @@ export default function Listing() {
   return (
     <main>
       <Swiper
-        slidesPerview={1}
-        Navigation
-        Pagination={{ type: 'progressbar' }}
+        slidesPerView={1}
+        navigation
+        pagination={{ type: 'progressbar' }}
         effect="fade"
         modules={[EffectFade]}
         autoPlay={{ delay: 3000 }}
@@ -107,11 +107,17 @@ export default function Listing() {
         <div className="w-full">
           <p className="text-2xl font-bold mb-3 tetx-blue-900">
             {listing.name} - ${' '}
-            {listing.offer ? listing.discountedPrice : listing.regularPrice}
-            {listing.type === 'rent' ? '/ month' : ''} // using condition to
-            display the rent/sale
-          </p>{' '}
-          // copy the reg expression for comma
+            {listing.offer
+              ? listing.discountedPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              : listing.regularPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            {listing.type === 'rent' ? '/ month' : ''}
+            {/* display the rent/sale */}
+          </p>
+          {/* // copy the reg expression for comma */}
           <p className="flex items-center mt-6 mb-3 font-semibold">
             <FaMapMarkerAlt className="text-green-700 mr-1" />
             {listing.address}
@@ -134,7 +140,7 @@ export default function Listing() {
             )}
           </div>
           <p className="mt-3 mb-3">
-            {' '}
+          
             <span className="font-semibold">Description - </span>
             {listing.description}
           </p>
@@ -166,7 +172,7 @@ export default function Listing() {
             <div className=" mt-6 ">
               <button
                 onClick={() => {
-                  setContactLandLord(false);
+                  setContactLandLord(true);
                 }}
                 className="px-7 py-3 bg-blue-600 text-white
           font-medium text-sm uppercase rounded shadow-md
@@ -180,25 +186,27 @@ export default function Listing() {
           )}
           {contactLandLord && (
             <Contact userRef={listing.userRef} listing={listing} />
-          )}{' '}
-          //passing props to the contact component
+          )}
+          {/* //passing props to the contact component */}
         </div>
         <div
           className=" w-full h-[200px] md:h-[400px] 
         z-10 overflow-x-hidden mt-6 md:mt-0 md:ml-2"
         >
-          <MapContainer center={[listing.geoLocation.lat,listing.geoLocation.lng]} zoom={13} 
-          scrollWheelZoom={false}
-          style={{height:"100%", width:"100%"}}
+          <MapContainer
+            center={[listing.geoLocation.lat, listing.geoLocation.lng]}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: '100%', width: '100%' }}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position= {[listing.geoLocation.lat,listing.geoLocation.lng]}>
-              <Popup>
-                {listing.address}
-              </Popup>
+            <Marker
+              position={[listing.geoLocation.lat, listing.geoLocation.lng]}
+            >
+              <Popup>{listing.address}</Popup>
             </Marker>
           </MapContainer>
         </div>

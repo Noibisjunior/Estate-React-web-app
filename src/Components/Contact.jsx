@@ -1,14 +1,16 @@
-import { getDoc, limitToLast } from 'firebase/firestore';
-import React, { useRef, useState } from 'react';
+import { doc,getDoc } from 'firebase/firestore';
+import  {  useState,useEffect } from 'react';
+import { db } from '../firebase';
+import { toast } from 'react-toastify';
 
-export default function Contact({ useRef, listing }) {
+export default function Contact({ userRef, listing }) {
   //getting the props
   const [LandLord, setLandLord] = useState(null);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
     async function getLandLord() {
-      const docRef = doc(db, 'users', useRef);
+      const docRef = doc(db, 'users', userRef);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setLandLord(docSnap.data());
@@ -18,7 +20,7 @@ export default function Contact({ useRef, listing }) {
     }
 
     getLandLord();
-  }, [useRef]);
+  }, [userRef]);
 
   function onChange(e) {
     setMessage(e.target.value);
@@ -26,7 +28,7 @@ export default function Contact({ useRef, listing }) {
 
   return (
     <>
-      {' '}
+      
       {LandLord !== null && (
         <div className="flex flex-col w-full">
           <p>
@@ -46,7 +48,7 @@ export default function Contact({ useRef, listing }) {
             ></textarea>
           </div>
           <a
-            href={`mailto:${Landlord.email}?
+            href={`mailto:${LandLord.email}?
           subject=${listing.name}&body=${message}`}
           >
             <button

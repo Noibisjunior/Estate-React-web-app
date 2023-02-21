@@ -3,9 +3,10 @@ import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 import OAuth from '../Components/OAuth';
 import {getAuth,createUserWithEmailAndPassword,updateProfile} from "firebase/auth"
 import {db} from "../firebase"
-import { serverTimestamp, setDoc } from 'firebase/firestore';
+import { serverTimestamp, setDoc,doc } from 'firebase/firestore';
 import { useNavigate} from "react-router-dom"
 import {toast} from "react-toastify"
+import { Link } from 'react-router-dom';
 
 
 export default function SignUp() {

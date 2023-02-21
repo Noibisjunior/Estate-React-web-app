@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MdLocationOn } from 'react-icons/md';
 import {FaTrash} from 'react-icons/fa'
 import {MdEdit} from 'react-icons/md'
+import Moment from 'react-moment';
 
 export default function ListingItem({ listing, id ,onDelete,onEdit}) {
   return (
@@ -18,7 +19,7 @@ export default function ListingItem({ listing, id ,onDelete,onEdit}) {
          ease-in"
           loading="lazy"
           src={listing.imgUrls[0]}
-          alt=""
+          alt="img"
         />
         <Moment
           className="absolute top-2 left-2 bg-[#3377cc]
@@ -29,7 +30,7 @@ export default function ListingItem({ listing, id ,onDelete,onEdit}) {
           {listing.timestamp?.toDate()}
         </Moment>
         <div className="w-full p-[10px]">
-          <div className="">
+          <div className="flex items-center space-x-1">
             <MdLocationOn className="h-4 w-4 text-green-600" />
             <p
               className="font-semibold text-sm mb-[2px]
@@ -42,8 +43,12 @@ export default function ListingItem({ listing, id ,onDelete,onEdit}) {
           <p className="text-[#457b9d] mt-2 font-semibold">
             $
             {listing.offer
-              ? listing.discountedPrice //copy this from github regexp
-              : listing.regularPrice}
+              ? listing.discountedPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              : listing.regularPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             {listing.type === 'rent' && '/ month'}
           </p>
           <div className="flex items-center mt-[10px] space x-3">
@@ -74,8 +79,7 @@ export default function ListingItem({ listing, id ,onDelete,onEdit}) {
         <MdEdit
           className="absolute bottom-2 right-7
         h-4 cursor-pointer"
-          onClick={() => onEdit
-          (listing.id)} //calling the ondelete function that is passed as a props to the listing
+          onClick={() => onEdit(listing.id)} //calling the ondelete function that is passed as a props to the listing
         />
       )}
     </li>

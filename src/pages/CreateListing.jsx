@@ -60,7 +60,7 @@ const Navigate = useNavigate()
     if(e.target.files){
       setFormData((prevState) =>({
         ...prevState,
-        images:e.target.files
+        images:e.target.files,
       }))
     }
 //Text/boolean/number
@@ -86,6 +86,10 @@ async function onSubmit(e){
     toast.error('Maximum 6 images are allowed');
     return;
   }
+  let geoLocation = {}
+  geoLocation.lat = latitude;
+  geoLocation.lng = longitude;
+
   //setting up the geoLocation
   // let geoLocation = {};
   // let location;
@@ -106,9 +110,9 @@ async function onSubmit(e){
   //     return;
   //   }
   // } else {
-    // geoLocation.lat = latitude;
-    // geoLocation.lng = longitude;
-  
+  // geoLocation.lat = latitude;
+  // geoLocation.lng = longitude;
+
   //creating a functionality that will upload all images to the database
   // async function storeImage(image) {
   //   return new Promise((resolve, reject) => {
@@ -147,51 +151,51 @@ async function onSubmit(e){
   //     );
   //   });
   // }
-function storeImage(image) {
-  return new Promise((resolve, reject) => {
-    const storage = getStorage();
-    const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
-    const storageRef = ref(storage, filename);
-    const uploadTask = uploadBytesResumable(storageRef, image);
+  async function storeImage(image) {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage();
+      const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+      const storageRef = ref(storage, filename);
+      const uploadTask = uploadBytesResumable(storageRef, image);
 
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
-        switch (snapshot.state) {
-          case 'paused':
-            console.log('Upload is paused');
-            break;
-          case 'running':
-            console.log('Upload is running');
-            break;
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+            case 'paused':
+              console.log('Upload is paused');
+              break;
+            case 'running':
+              console.log('Upload is running');
+              break;
+          }
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          reject(error);
         }
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-        reject(error);
-      }
-    );
+      );
 
-    uploadTask.then(
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          resolve(downloadURL);
-        });
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-        reject(error);
-      }
-    );
-  });
-}
+      uploadTask.then(
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          reject(error);
+        }
+      );
+    });
+  }
 
   //generate url for the images
   const imgUrls = await Promise.all(
@@ -201,7 +205,7 @@ function storeImage(image) {
     toast.error('images not uploaded');
     return;
   });
-  // console.log(imgUrls);
+  console.log(imgUrls);
 
   //create another instance of formData
   const formDataCopy = {
@@ -209,7 +213,7 @@ function storeImage(image) {
     imgUrls,
     geoLocation,
     timestamp: serverTimestamp(),
-    useRef: auth.currentUser.uid, //getting info of the user
+    userRef: auth.currentUser.uid, //getting info of the user
   };
   delete formDataCopy.images;
   !formDataCopy.offer && delete formDataCopy.discountedPrice;
