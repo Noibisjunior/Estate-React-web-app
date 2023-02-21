@@ -8,12 +8,12 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from 'firebase/storage';
-import { addDoc, serverTimestamp, collection, getDoc } from 'firebase/firestore';
+import { addDoc, serverTimestamp, collection, getDoc,updateDoc } from 'firebase/firestore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import { v4 as uuidv4 } from 'uuid';
 
-export default async function CreateListing() {
+export default function CreateListing() {
   const auth = getAuth();
   const Navigate = useNavigate();
 
@@ -55,7 +55,7 @@ export default async function CreateListing() {
 const params = useParams();
 
   useEffect(() => {
-    if (Listing && Listing.useRef !== auth.currentUser.uid) {
+    if (Listing && Listing.userRef !== auth.currentUser.uid) {
       toast.error('you cannot edit this listing');
       Navigate('/');
     }
@@ -116,34 +116,34 @@ else{
       toast.error('Discounted price needs to be less than regular price');
       return;
     }
-    if (Image.length > 6) {
+    if (images.length > 6) {
       setLoading(false);
       toast.error('Maximum 6 images are allowed');
       return;
     }
     //setting up the geoLocation
     let geoLocation = {};
-    let location;
-    if (geoLocationEnabled) {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
-      );
-      const data = await response.json();
-      console.log(data);
-      geoLocation.lat = data.results[0]?.geometry.location.lat ?? 0;
-      geoLocation.long = data.results[0]?.geometry.location.lng ?? 0;
-
-      location = data.status === 'ZERO_RESULTS' && undefined;
-
-      if (location === undefined) {
-        setLoading(false);
-        toast.error('please provide a correct address');
-        return;
-      }
-    } else {
-      geoLocation.lat = latitude;
+    geoLocation.lat = latitude;
       geoLocation.lng = longitude;
-    }
+   
+    // if (geoLocationEnabled) {
+    //   const response = await fetch(
+    //     `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+    //   );
+    //   const data = await response.json();
+    //   console.log(data);
+    //   geoLocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+    //   geoLocation.long = data.results[0]?.geometry.location.lng ?? 0;
+
+    //   location = data.status === 'ZERO_RESULTS' && undefined;
+
+    //   if (location === undefined) {
+    //     setLoading(false);
+    //     toast.error('please provide a correct address');
+    //     return;
+    //   }
+    // } else {
+       
     //creating a functionality that will upload all images to the database
     async function storeImage(image) {
       return new Promise((resolve, reject) => {
@@ -196,7 +196,7 @@ else{
       imgUrls,
       geoLocation,
       timestamp: serverTimestamp(),
-      useRef: auth.currentUser.uid, //getting info of the user
+      userRef: auth.currentUser.uid, //getting info of the user
     };
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discountedPrice;
@@ -225,7 +225,7 @@ else{
           <button
             type="button"
             id="type"
-            value="sell"
+            value="sale"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
@@ -243,7 +243,7 @@ else{
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
-          type === 'sell' ? 'bg-white text-black' : 'bg-slate-600 text-white'
+          type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
             Rent
@@ -312,7 +312,7 @@ else{
           !parking ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            Yes
+            yes
           </button>
           <button
             type="button"
@@ -325,7 +325,7 @@ else{
           parking ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            No
+            no
           </button>
         </div>
 
@@ -342,12 +342,12 @@ else{
           !furnished ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            sell
+            yes
           </button>
           <button
             type="button"
-            id="type"
-            value="sale"
+            id="furnished"
+            value={false}
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
@@ -355,7 +355,7 @@ else{
           type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            Rent
+            no
           </button>
         </div>
         <p className="text-lg mt-6 font-semibold">Property-Address</p>
@@ -435,7 +435,7 @@ else{
           !offer ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            Yes
+            yes
           </button>
           <button
             type="button"
@@ -448,7 +448,7 @@ else{
           offer ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            No
+            no
           </button>
         </div>
         <div className=" flex items-center mb-6">
@@ -514,7 +514,7 @@ else{
           </p>
           <input
             type="file"
-            id="image"
+            id="images"
             onChange={onChange}
             accept=".jpg,.png,.jpeg"
             multiple
@@ -526,7 +526,6 @@ else{
           />
         </div>
         <button
-          onSubmit={onSubmit}
           type="submit"
           className="mb-6 w-full px-7 py-3 bg-blue-600 text-white
           font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg

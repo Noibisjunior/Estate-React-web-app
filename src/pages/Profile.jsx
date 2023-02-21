@@ -196,7 +196,7 @@ export default function Profile() {
                     listing.id
                   }
                   id={listing.id}
-                  listing={listings.data}
+                  listing={listing.data}
                   onDelete={() => onDelete(listing.id)}
                   onEdit={() => onEdit(listing.id)}
                 /> //passing the props to the list item component

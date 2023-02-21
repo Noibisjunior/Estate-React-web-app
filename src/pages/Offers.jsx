@@ -1,4 +1,4 @@
-import { collection, getDoc, getDocs, limit, orderBy, query, startAfter, where } from 'firebase/firestore'
+import { collection,  getDocs, limit, orderBy, query, startAfter, where } from 'firebase/firestore'
 import {useEffect,useState} from 'react'
 import {toast} from 'react-toastify'
 import ListingItem from '../Components/ListingItem'

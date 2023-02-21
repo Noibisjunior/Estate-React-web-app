@@ -32,7 +32,7 @@ export default function Listing() {
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const [contactLandLord, setContactLandLord] = useState(false);
 
-  SwiperCore.use([Autoplay, Navigation, Pagination, EffectFade]);
+  SwiperCore.use([Autoplay, Navigation, Pagination]);
 
   useEffect(() => {
     async function fetchListing() {
@@ -45,7 +45,6 @@ export default function Listing() {
       }
     }
     fetchListing();
-    console.log(listing);
   }, [params.listingId]); //adding the dependency
   if (loading) {
     return <Spinner />;

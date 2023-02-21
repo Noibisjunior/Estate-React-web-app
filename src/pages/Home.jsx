@@ -2,19 +2,20 @@ import { db } from '../firebase';
 import {
   collection,
   getDocs,
+  getDoc,
   limit,
   orderBy,
   query,
   where,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-// import Slider from '../Components/Slider';
+import Slider from '../Components/Slider';
 import { Link } from 'react-router-dom';
 import ListingItem from '../Components/ListingItem';
 
 export default function Home() {
   // for offers
-  const [offerListing, setOfferlisting] = useState(null);
+  const [offerListing, setOfferListing] = useState(null);
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -36,8 +37,7 @@ export default function Home() {
             data: doc.data(),
           });
         });
-        setOfferlisting(listings);
-        console.log(listings);
+        setOfferListing(listings);
       } catch (error) {
         console.log(error);
       }
@@ -46,7 +46,7 @@ export default function Home() {
   }, []);
 
   // places for Rent
-  const [RentListing, setRentlisting] = useState(null);
+  const [RentListing, setRentListing] = useState(null);
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -68,8 +68,8 @@ export default function Home() {
             data: doc.data(),
           });
         });
-        setRentlisting(listings); //create the index
-        console.log(listings);
+        setRentListing(listings); //create the index
+      
       } catch (error) {
         console.log(error);
       }
@@ -78,7 +78,7 @@ export default function Home() {
   }, []);
 
   // places for Sale
-  const [SaleListing, setSalelisting] = useState(null);
+  const [SaleListing, setSaleListing] = useState(null);
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -100,8 +100,8 @@ export default function Home() {
             data: doc.data(),
           });
         });
-        setSalelisting(listings); //create the index
-        console.log(listings);
+        setSaleListing(listings); //create the index
+    
       } catch (error) {
         console.log(error);
       }
@@ -111,7 +111,7 @@ export default function Home() {
 
   return (
     <div>
-      {/* <Slider /> */}
+      <Slider />
       <div className="max-w-6xl mx-auto pt-4 spa-y-6">
         {offerListing && offerListing.length > 0 && (
           <div className="m-2 mb-6">
@@ -138,7 +138,7 @@ export default function Home() {
             </ul>
           </div>
         )}
-        //rent
+        {/* //rent */}
         {RentListing && RentListing.length > 0 && (
           <div className="m-2 mb-6">
             <h2 className="px-3 text-2xl mt-6 font-semibold">
@@ -166,7 +166,7 @@ export default function Home() {
             </ul>
           </div>
         )}
-        //sale
+        {/* //sale */}
         {SaleListing && SaleListing.length > 0 && (
           <div className="m-2 mb-6">
             <h2 className="px-3 text-2xl mt-6 font-semibold">

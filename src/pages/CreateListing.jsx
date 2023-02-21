@@ -24,7 +24,7 @@ const Navigate = useNavigate()
     furnished: false,
     address: '',
     description: '',
-    offer: true,
+    offer: false,
     regularPrice: 0,
     discountedPrice: 0,
     latitude: 0,
@@ -81,14 +81,14 @@ async function onSubmit(e){
     toast.error('Discounted price needs to be less than regular price');
     return;
   }
-  if (Image.length > 6) {
+  if (images.length > 6) {
     setLoading(false);
     toast.error('Maximum 6 images are allowed');
     return;
   }
-  let geoLocation = {}
-  geoLocation.lat = latitude;
-  geoLocation.lng = longitude;
+  // let geoLocation = {}
+  // geoLocation.lat = latitude;
+  // geoLocation.lng = longitude;
 
   //setting up the geoLocation
   // let geoLocation = {};
@@ -241,7 +241,7 @@ async function onSubmit(e){
           <button
             type="button"
             id="type"
-            value="sell"
+            value="sale"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
@@ -259,7 +259,7 @@ async function onSubmit(e){
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
-          type === 'sell' ? 'bg-white text-black' : 'bg-slate-600 text-white'
+          type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
             Rent
@@ -358,12 +358,12 @@ async function onSubmit(e){
           !furnished ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            sell
+            yes
           </button>
           <button
             type="button"
-            id="type"
-            value="sale"
+            id="furnished"
+            value={false}
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
@@ -371,7 +371,7 @@ async function onSubmit(e){
           type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            Rent
+            no
           </button>
         </div>
         <p className="text-lg mt-6 font-semibold">Property-Address</p>
@@ -530,7 +530,7 @@ async function onSubmit(e){
           </p>
           <input
             type="file"
-            id="image"
+            id="images"
             onChange={onChange}
             accept=".jpg,.png,.jpeg"
             multiple

@@ -22,10 +22,10 @@ export default function ListingItem({ listing, id ,onDelete,onEdit}) {
           alt="img"
         />
         <Moment
+          fromNow
           className="absolute top-2 left-2 bg-[#3377cc]
         text-white uppercase text-xs font-semibold
         rounded-md px-2 py-1 shadow-lg"
-          fromNow
         >
           {listing.timestamp?.toDate()}
         </Moment>
