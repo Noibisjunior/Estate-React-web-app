@@ -86,9 +86,9 @@ async function onSubmit(e){
     toast.error('Maximum 6 images are allowed');
     return;
   }
-  // let geoLocation = {}
-  // geoLocation.lat = latitude;
-  // geoLocation.lng = longitude;
+  let geoLocation = {}
+  geoLocation.lat = latitude;
+  geoLocation.lng = longitude;
 
   //setting up the geoLocation
   // let geoLocation = {};
@@ -220,7 +220,7 @@ async function onSubmit(e){
   delete formDataCopy.latitude;
   delete formDataCopy.longitude;
 
-  const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
+  const docRef = await addDoc(collection(db, 'listings'),formDataCopy);
   setLoading(false);
   toast.success('listing created');
   Navigate(`/category/${formDataCopy.type}/${docRef.id}`);
