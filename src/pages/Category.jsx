@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ListingItem from '../Components/ListingItem';
 import { db } from '../firebase';
+import Spinner from '../Components/spinner';
 
 export default function Category() {
   const [listing, setListings] = useState(null);

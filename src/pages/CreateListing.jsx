@@ -114,50 +114,12 @@ async function onSubmit(e){
   // geoLocation.lng = longitude;
 
   //creating a functionality that will upload all images to the database
-  // async function storeImage(image) {
-  //   return new Promise((resolve, reject) => {
-  //     const storage = getStorage();
-  //     const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
-  //     const storageRef = ref(storage, filename);
-  //     const uploadTask = uploadBytesResumable(storageRef, image);
-  //     uploadTask.on(
-  //       'state_changed',
-  //       (snapshot) => {
-  //         // Observe state change events such as progress, pause, and resume
-  //         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-  //         const progress =
-  //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-  //         console.log('Upload is ' + progress + '% done');
-  //         switch (snapshot.state) {
-  //           case 'paused':
-  //             console.log('Upload is paused');
-  //             break;
-  //           case 'running':
-  //             console.log('Upload is running');
-  //             break;
-  //         }
-  //       },
-  //       (error) => {
-  //         // Handle unsuccessful uploads
-  //         reject(error);
-  //       },
-  //       () => {
-  //         // Handle successful uploads on complete
-  //         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-  //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-  //           resolve(downloadURL);
-  //         });
-  //       }
-  //     );
-  //   });
-  // }
   async function storeImage(image) {
     return new Promise((resolve, reject) => {
       const storage = getStorage();
       const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
       const storageRef = ref(storage, filename);
       const uploadTask = uploadBytesResumable(storageRef, image);
-
       uploadTask.on(
         'state_changed',
         (snapshot) => {
@@ -178,24 +140,62 @@ async function onSubmit(e){
         (error) => {
           // Handle unsuccessful uploads
           reject(error);
-        }
-      );
-
-      uploadTask.then(
+        },
         () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             resolve(downloadURL);
           });
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-          reject(error);
         }
       );
     });
   }
+  // async function storeImage(image) {
+  //   return new Promise((resolve, reject) => {
+  //     const storage = getStorage();
+  //     const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+  //     const storageRef = ref(storage, filename);
+  //     const uploadTask = uploadBytesResumable(storageRef, image);
+
+  //     uploadTask.on(
+  //       'state_changed',
+  //       (snapshot) => {
+  //         // Observe state change events such as progress, pause, and resume
+  //         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+  //         const progress =
+  //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //         console.log('Upload is ' + progress + '% done');
+  //         switch (snapshot.state) {
+  //           case 'paused':
+  //             console.log('Upload is paused');
+  //             break;
+  //           case 'running':
+  //             console.log('Upload is running');
+  //             break;
+  //         }
+  //       },
+  //       (error) => {
+  //         // Handle unsuccessful uploads
+  //         reject(error);
+  //       }
+  //     );
+
+  //     uploadTask.then(
+  //       () => {
+  //         // Handle successful uploads on complete
+  //         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+  //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+  //           resolve(downloadURL);
+  //         });
+  //       },
+  //       (error) => {
+  //         // Handle unsuccessful uploads
+  //         reject(error);
+  //       }
+  //     );
+  //   });
+  // }
 
   //generate url for the images
   const imgUrls = await Promise.all(
@@ -541,7 +541,7 @@ async function onSubmit(e){
            '
           />
           </div>
-          <button onSubmit={onSubmit}
+          <button 
             type="submit"
             className="mb-6 w-full px-7 py-3 bg-blue-600 text-white
           font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg

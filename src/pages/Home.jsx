@@ -15,7 +15,7 @@ import ListingItem from '../Components/ListingItem';
 
 export default function Home() {
   // for offers
-  const [offerListing, setOfferListing] = useState(null);
+  const [offerListings, setOfferListings] = useState(null);
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -37,7 +37,7 @@ export default function Home() {
             data: doc.data(),
           });
         });
-        setOfferListing(listings);
+        setOfferListings(listings);
       } catch (error) {
         console.log(error);
       }
@@ -46,7 +46,7 @@ export default function Home() {
   }, []);
 
   // places for Rent
-  const [RentListing, setRentListing] = useState(null);
+  const [rentListings, setRentListings] = useState(null);
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -68,7 +68,7 @@ export default function Home() {
             data: doc.data(),
           });
         });
-        setRentListing(listings); //create the index
+        setRentListings(listings); //create the index
       
       } catch (error) {
         console.log(error);
@@ -78,7 +78,7 @@ export default function Home() {
   }, []);
 
   // places for Sale
-  const [SaleListing, setSaleListing] = useState(null);
+  const [saleListings, setSaleListings] = useState(null);
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -100,7 +100,7 @@ export default function Home() {
             data: doc.data(),
           });
         });
-        setSaleListing(listings); //create the index
+        setSaleListings(listings); //create the index
     
       } catch (error) {
         console.log(error);
@@ -113,7 +113,7 @@ export default function Home() {
     <div>
       <Slider />
       <div className="max-w-6xl mx-auto pt-4 spa-y-6">
-        {offerListing && offerListing.length > 0 && (
+        {offerListings && offerListings.length > 0 && (
           <div className="m-2 mb-6">
             <h2 className="px-3 text-2xl mt-6 font-semibold">Recent Offers</h2>
             <Link to="/offers">
@@ -128,7 +128,7 @@ export default function Home() {
               className="sm:grid sm:grid-cols-2
              lg:grid-cols-3 xl:grid-cols-4"
             >
-              {offerListing.map((listing) => {
+              {offerListings.map((listing) => {
                 <ListingItem
                   key={listing.id}
                   listing={listing.data}
@@ -139,7 +139,7 @@ export default function Home() {
           </div>
         )}
         {/* //rent */}
-        {RentListing && RentListing.length > 0 && (
+        {rentListings && rentListings.length > 0 && (
           <div className="m-2 mb-6">
             <h2 className="px-3 text-2xl mt-6 font-semibold">
               places For Rent
@@ -156,7 +156,7 @@ export default function Home() {
               className="sm:grid sm:grid-cols-2
              lg:grid-cols-3 xl:grid-cols-4"
             >
-              {RentListing.map((listing) => {
+              {rentListings.map((listing) => {
                 <ListingItem
                   key={listing.id}
                   listing={listing.data}
@@ -167,7 +167,7 @@ export default function Home() {
           </div>
         )}
         {/* //sale */}
-        {SaleListing && SaleListing.length > 0 && (
+        {saleListings && saleListings.length > 0 && (
           <div className="m-2 mb-6">
             <h2 className="px-3 text-2xl mt-6 font-semibold">
               places For Sale
@@ -184,7 +184,7 @@ export default function Home() {
               className="sm:grid sm:grid-cols-2
              lg:grid-cols-3 xl:grid-cols-4"
             >
-              {SaleListing.map((listing) => {
+              {saleListings.map((listing) => {
                 <ListingItem
                   key={listing.id}
                   listing={listing.data}

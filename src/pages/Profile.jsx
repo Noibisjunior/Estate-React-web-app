@@ -189,7 +189,7 @@ export default function Profile() {
               My Listings
             </h2>
             <ul className="sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mt-6 mb-6">
-              {listing.map((listings) => (
+              {listing.map((listing) => (
                 <ListingItem
                   key={
                     //a new component
