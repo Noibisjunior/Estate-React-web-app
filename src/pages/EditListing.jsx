@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Spinner from '../Components/spinner';
 import { getAuth } from 'firebase/auth';
@@ -8,7 +8,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from 'firebase/storage';
-import { addDoc, serverTimestamp, collection, getDoc,updateDoc } from 'firebase/firestore';
+import { doc,addDoc, serverTimestamp, collection, getDoc,updateDoc } from 'firebase/firestore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,7 +19,7 @@ export default function CreateListing() {
 
   const [geoLocationEnabled, setGeoLocationEnabled] = useState(true);
   const [Loading, setLoading] = useState(false);
-  const [Listing, setListing] = useState(null);
+  const [listing, setListing] = useState(null);
   const [formData, setFormData] = useState({
     type: 'rent',
     name: '',
@@ -55,11 +55,11 @@ export default function CreateListing() {
 const params = useParams();
 
   useEffect(() => {
-    if (Listing && Listing.userRef !== auth.currentUser.uid) {
+    if (listing && listing.userRef !== auth.currentUser.uid) {
       toast.error('you cannot edit this listing');
       Navigate('/');
     }
-  }, [auth.currentUser.uid,Listing,Navigate]);
+  }, [auth.currentUser.uid,listing,Navigate]);
 
 
 
@@ -122,11 +122,9 @@ else{
       return;
     }
     //setting up the geoLocation
-    let geoLocation = {};
-    geoLocation.lat = latitude;
-      geoLocation.lng = longitude;
-   
-    // if (geoLocationEnabled) {
+    // let geoLocation = {};
+    // let location
+    // // if (geoLocationEnabled) {
     //   const response = await fetch(
     //     `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
     //   );
@@ -228,12 +226,12 @@ else{
             value="sale"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg mr-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           type === 'rent' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
-            sell
+            sale
           </button>
           <button
             type="button"
@@ -241,7 +239,7 @@ else{
             value="rent"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
-        hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
+        hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
           type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
@@ -261,7 +259,7 @@ else{
           required
           className="w-full px-4 py-2 text-xl text-gray-700
       bg-white border border-gray-300 rounded transition duration-150
-      ease-in-out focus:text-gray-700 focus:text-gray-700
+      ease-in-out  focus:text-gray-700
       focus:bg-white focus:border-slate-600 mb-6"
         />
 
@@ -352,7 +350,7 @@ else{
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg ml-3 focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
-          type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
+          furnished ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
             no

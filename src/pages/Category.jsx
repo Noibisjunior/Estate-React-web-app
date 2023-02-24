@@ -15,7 +15,7 @@ import { db } from '../firebase';
 import Spinner from '../Components/spinner';
 
 export default function Category() {
-  const [listing, setListings] = useState(null);
+  const [listings, setListings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [lastFetchListing, setLastFetchListing] = useState(null);
 const params = useParams()
@@ -27,7 +27,7 @@ const params = useParams()
         //create the query
         const q = query(
           listingRef,
-          where('type', '==', params.CategoryName),
+          where('type', '==', params.categoryName),
           orderBy('timestamp', 'desc'),
           limit(8)
         );
@@ -39,14 +39,14 @@ const params = useParams()
         setLastFetchListing(lastVisible);
 
         //create the listings variable
-        const Listing = [];
+        const listings = [];
         querySnap.forEach((doc) => {
-          return Listing.push({
+          return listings.push({
             id: doc.id,
             data: doc.data(),
           });
         });
-        setListings(Listing);
+        setListings(listings);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -54,7 +54,7 @@ const params = useParams()
       }
     }
     fetchListings();
-  }, [params.CategoryName]);
+  }, [params.categoryName]);
 
   async function onFetchMoreListing() {
     try {
@@ -63,7 +63,7 @@ const params = useParams()
       //create the query
       const q = query(
         listingRef,
-        where('type', '==', params.CategoryName),
+        where('type', '==', params.categoryName),
         orderBy('timestamp', 'desc'),
         startAfter(lastFetchListing),
         //use this method to start after the last fetching
@@ -84,7 +84,7 @@ const params = useParams()
           data: doc.data(),
         });
       });
-      setListings((prevState) => [...prevState, ...listing]);
+      setListings((prevState) => [...prevState, ...listings]);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -94,19 +94,19 @@ const params = useParams()
   return (
     <div className="max-w-6xl mx-auto px-3">
       <h1 className="text-3xl text-center mt-6 font-bold mb-6">
-        {params.CategoryName === 'rent' ? 'places for Rent' : 'places for Sale'}
+        {params.categoryName === 'rent' ? 'places for Rent' : 'places for Sale'}
       </h1>
       {/* //showing the h1 dynamically */}
       {loading ? (
         <Spinner />
-      ) : listing && listing.length > 0 ? (
+      ) : listings && listings.length > 0 ? (
         <>
           <main>
             <ul
               className="sm:grid sm:grid-cols-2 lg:grid-cols-3
   xl:grid-cols-4 2xl:grid-cols-5"
             >
-              {listing.map((listing) => {
+              {listings.map((listing) => {
                 <ListingItem
                   key={listing.id}
                   id={listing.id}
@@ -130,7 +130,7 @@ const params = useParams()
           )}
         </>
       ) : (
-        <p>There are no current {" "} {params.CategoryName === "rent" ? "places for rent" : "places for sale"}</p>
+        <p>There are no current{" "} {params.categoryName === "rent" ? "places for rent" : "places for sale"}</p>
       )}
     </div>
   );

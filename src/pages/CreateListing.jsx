@@ -283,7 +283,7 @@ async function onSubmit(e){
 
         <div className="flex space-x-6 mb-6">
           <div>
-            <p className="text-lg font-semibold">Beds</p>
+            <p className="text-lg font-semibold">Bed</p>
             <input
               type="number"
               id="bedrooms"
@@ -368,7 +368,7 @@ async function onSubmit(e){
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded 
         hover:shadow-lg  focus:shadow-lg active:shadow-lg transition 
         duration-150 ease-in-out w-full ${
-          type === 'sale' ? 'bg-white text-black' : 'bg-slate-600 text-white'
+          furnished ? 'bg-white text-black' : 'bg-slate-600 text-white'
         }`}
           >
             no

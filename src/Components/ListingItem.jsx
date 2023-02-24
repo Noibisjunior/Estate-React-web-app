@@ -43,21 +43,20 @@ export default function ListingItem({ listing, id ,onDelete,onEdit}) {
           <p className="text-[#457b9d] mt-2 font-semibold">
             $
             {listing.offer
-              ? listing.discountedPrice
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-              : listing.regularPrice
+              ? listing.regularPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              : listing.discountedPrice
                   .toString()
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             {listing.type === 'rent' && '/ month'}
           </p>
           <div className="flex items-center mt-[10px] space x-3">
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-2">
               <p className="font-bold text-xs">
-                {listing.bedroom > 1 ? `${listing.bedroom} Beds` : '1 Bed'}
+                {listing.bedrooms > 1 ? `${listing.bedrooms} Beds` : '1 Bed'} 
               </p>
             </div>
-            <div className="flex items-center space-x-1">
+            
+            <div className="flex items-center space-x-2">
               <p className="font-bold text-xs">
                 {listing.bathrooms > 1
                   ? `${listing.bathrooms} Baths`

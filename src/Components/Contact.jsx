@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 export default function Contact({ userRef, listing }) {
   //getting the props
-  const [LandLord, setLandLord] = useState(null);
+  const [landLord, setLandLord] = useState(null);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -29,11 +29,11 @@ export default function Contact({ userRef, listing }) {
   return (
     <>
       
-      {LandLord !== null && (
+      {landLord !== null && (
         <div className="flex flex-col w-full">
           <p>
-            Contact the {LandLord.name} for the
-            {listing.name.toLowerCase()}
+            Contact  {landLord.name} for 
+           {""} {listing.name.toLowerCase()}
           </p>
           <div className="mt-3 mb-6">
             <textarea
@@ -42,13 +42,13 @@ export default function Contact({ userRef, listing }) {
               rows="2"
               value={message}
               onChange={onChange}
-              className="w-full px-4 py-2 text-xl text-gray-300 
+              className="w-full px-4 py-2 text-xl text-black-300 
               bg-white border-gray-300 border rounded transition 
               duration-150"
             ></textarea>
           </div>
           <a
-            href={`mailto:${LandLord.email}?
+            href={`mailto:${landLord.email}?
           subject=${listing.name}&body=${message}`}
           >
             <button

@@ -30,7 +30,7 @@ export default function Listing() {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
-  const [contactLandLord, setContactLandLord] = useState(false);
+  const [contactLandlord, setContactLandLord] = useState(false);
 
   SwiperCore.use([Autoplay, Navigation, Pagination]);
 
@@ -107,12 +107,11 @@ export default function Listing() {
           <p className="text-2xl font-bold mb-3 tetx-blue-900">
             {listing.name} - ${' '}
             {listing.offer
-              ? listing.discountedPrice
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-              : listing.regularPrice
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              ? listing.regularPrice
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',') :
+                listing.discountedPrice
+             .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 
             {listing.type === 'rent' ? '/ month' : ''}
             {/* display the rent/sale */}
           </p>
@@ -126,20 +125,19 @@ export default function Listing() {
               className="bg-red-800 w-full max-w-[200px] rounded-md p-1
              text-white text-center font-semibold shadow-md"
             >
-              {listing.type === 'rent' ? 'Rent' : 'sale'}
+              {listing.type === 'rent' ? 'Rent' : 'Sale'}
             </p>
-            {Listing.offer && (
+            {listing.offer && (
               <p
                 className="w-full max-w-[200px] bg-green-500
                rounded-md p-1 text-white text-center 
                font-semibold shadow-md "
               >
-                ${+listing.regularPrice - +listing.discountedPrice} discount
+                ${listing.discountedPrice} discount
               </p>
             )}
           </div>
           <p className="mt-3 mb-3">
-          
             <span className="font-semibold">Description - </span>
             {listing.description}
           </p>
@@ -159,31 +157,31 @@ export default function Listing() {
 
             <li className="flex items-center whitespace-nowrap">
               <FaParking className="text-lg mr-1" />
-              {+listing.parking ? 'Parking spot' : 'No parking'}
+              {listing.parking ? 'Parking spot' : 'No parking'}
             </li>
 
             <li className="flex items-center whitespace-nowrap">
               <FaChair className="text-lg mr-1" />
-              {+listing.furnished ? 'Furnished' : 'Not furnished'}
+              {listing.furnished ? 'Furnished' : 'Not furnished'}
             </li>
           </ul>
-          {listing.userRef !== auth.currentUser?.uid && !contactLandLord && (
-            <div className=" mt-6 ">
-              <button
-                onClick={() => {
-                  setContactLandLord(true);
-                }}
-                className="px-7 py-3 bg-blue-600 text-white
+          {/* {listing.userRef !== auth.currentUser?.uid && !contactLandlord && ( */}
+          <div className=" mt-6 ">
+            <button
+              onClick={() => {
+                setContactLandLord(true);
+              }}
+              className="px-7 py-3 bg-blue-600 text-white
           font-medium text-sm uppercase rounded shadow-md
           hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700
           focus:shadow-lg w-full text-center transition 
           duration-150 ease-out"
-              >
-                Contact LandLord
-              </button>
-            </div>
-          )}
-          {contactLandLord && (
+            >
+              Contact LandLord
+            </button>
+          </div>
+
+          {contactLandlord && (
             <Contact userRef={listing.userRef} listing={listing} />
           )}
           {/* //passing props to the contact component */}
@@ -193,7 +191,7 @@ export default function Listing() {
         z-10 overflow-x-hidden mt-6 md:mt-0 md:ml-2"
         >
           <MapContainer
-            center={[listing.geoLocation.lat, listing.geoLocation.lng]}
+            // center={[listing.geoLocation.lat, listing.geoLocation.lng]}
             zoom={13}
             scrollWheelZoom={false}
             style={{ height: '100%', width: '100%' }}
@@ -203,7 +201,7 @@ export default function Listing() {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <Marker
-              position={[listing.geoLocation.lat, listing.geoLocation.lng]}
+            // position={[listing.geoLocation.lat, listing.geoLocation.lng]}
             >
               <Popup>{listing.address}</Popup>
             </Marker>
