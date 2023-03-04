@@ -177,7 +177,7 @@ export default function Profile() {
             justify-center items-center"
             >
               <FcHome className="mr-2 text-3xl bg-red-200 rounded-full p-1 border-2" />
-              Sell or Rent your home
+              Sell or Rent your Home
             </Link>
           </button>
         </div>
