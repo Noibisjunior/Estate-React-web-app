@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import OAuth from '../Components/OAuth';
 import { useNavigate } from 'react-router-dom';
-import { async } from '@firebase/util';
 import { toast } from 'react-toastify';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 

@@ -10,7 +10,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { db } from '../firebase';
-import Spinner from '../Components/Spinner';
+import Spinner from '../Components/spinner';
 import ListingItem from '../Components/ListingItem';
 
 export default function Offers() {
