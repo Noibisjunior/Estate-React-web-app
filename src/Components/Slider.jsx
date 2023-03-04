@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import Spinner from '../components/Spinner';
+import Spinner from '../Components/spinner';
 import { db } from '../firebase';
 import {
   collection,
