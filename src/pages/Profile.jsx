@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { db } from '../firebase';
-import { ImHome3 } from 'react-icons/Im';
+import { FcHome } from 'react-icons/fc';
 import ListingItem from '../Components/ListingItem';
 
 export default function Profile() {
@@ -176,7 +176,7 @@ export default function Profile() {
               className="flex
             justify-center items-center"
             >
-              <ImHome3 className="mr-2 text-3xl bg-red-200 rounded-full p-1 border-2" />
+              <FcHome className="mr-2 text-3xl bg-red-200 rounded-full p-1 border-2" />
               Sell or Rent your home
             </Link>
           </button>

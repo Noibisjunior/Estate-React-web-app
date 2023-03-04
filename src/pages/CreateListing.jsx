@@ -10,11 +10,11 @@ import {v4 as uuidv4} from "uuid"
 
 
 export default  function CreateListing() {
-const auth = getAuth()
-const Navigate = useNavigate()
+  const auth = getAuth();
+  const Navigate = useNavigate();
 
-  const [geoLocationEnabled,setGeoLocationEnabled] = useState(true)
-  const [Loading,setLoading] = useState(false)
+  const [geoLocationEnabled, setGeoLocationEnabled] = useState(true);
+  const [Loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: 'rent',
     name: '',
@@ -28,8 +28,8 @@ const Navigate = useNavigate()
     regularPrice: 0,
     discountedPrice: 0,
     latitude: 0,
-    longitude:0,
-    images:{}
+    longitude: 0,
+    images: {},
   });
   const {
     type,
@@ -43,193 +43,192 @@ const Navigate = useNavigate()
     offer,
     regularPrice,
     discountedPrice,
-    latitude ,
+    latitude,
     longitude,
-    images
+    images,
   } = formData; //destructuring formData
 
   function onChange(e) {
     let boolean = null;
-    if(e.target.value === "true"){
-      boolean = true
+    if (e.target.value === 'true') {
+      boolean = true;
     }
-    if(e.target.value === "false"){
-      boolean = false
+    if (e.target.value === 'false') {
+      boolean = false;
     }
-//files
-    if(e.target.files){
-      setFormData((prevState) =>({
-        ...prevState,
-        images:e.target.files,
-      }))
-    }
-//Text/boolean/number
-    if(!e.target.files){
+    //files
+    if (e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
-        [e.target.id]: boolean ?? e.target.value
-      }))
+        images: e.target.files,
+      }));
+    }
+    //Text/boolean/number
+    if (!e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: boolean ?? e.target.value,
+      }));
     }
   }
 
   //submitting the form to the database
-async function onSubmit(e){
-  e.preventDefault();
-  setLoading(true); //changing the state of the form after submitting
-  if (+discountedPrice >= +regularPrice) {
-    setLoading(false);
-    toast.error('Discounted price needs to be less than regular price');
-    return;
-  }
-  if (images.length > 6) {
-    setLoading(false);
-    toast.error('Maximum 6 images are allowed');
-    return;
-  }
-  let geoLocation = {}
-  geoLocation.lat = latitude;
-  geoLocation.lng = longitude;
+  async function onSubmit(e) {
+    e.preventDefault();
+    setLoading(true); //changing the state of the form after submitting
+    if (+discountedPrice >= +regularPrice) {
+      setLoading(false);
+      toast.error('Discounted price needs to be less than regular price');
+      return;
+    }
+    if (images.length > 6) {
+      setLoading(false);
+      toast.error('Maximum 6 images are allowed');
+      return;
+    }
+    let geoLocation = {};
+    geoLocation.lat = latitude;
+    geoLocation.lng = longitude;
 
-  //setting up the geoLocation
-  // let geoLocation = {};
-  // let location;
-  // if (geoLocationEnabled) {
-  //   const response = await fetch(
-  //     `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
-  //   );
-  //   const data = await response.json();
-  //   console.log(data);
-  //   geoLocation.lat = data.results[0]?.geometry.location.lat ?? 0;
-  //   geoLocation.lng = data.results[0]?.geometry.location.lng ?? 0;
+    //setting up the geoLocation
+    // let geoLocation = {};
+    // let location;
+    // if (geoLocationEnabled) {
+    //   const response = await fetch(
+    //     `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+    //   );
+    //   const data = await response.json();
+    //   console.log(data);
+    //   geoLocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+    //   geoLocation.lng = data.results[0]?.geometry.location.lng ?? 0;
 
-  //   location = data.status === 'ZERO_RESULTS' && undefined;
+    //   location = data.status === 'ZERO_RESULTS' && undefined;
 
-  //   if (location === undefined) {
-  //     setLoading(false);
-  //     toast.error('please provide a correct address');
-  //     return;
-  //   }
-  // } else {
-  // geoLocation.lat = latitude;
-  // geoLocation.lng = longitude;
+    //   if (location === undefined) {
+    //     setLoading(false);
+    //     toast.error('please provide a correct address');
+    //     return;
+    //   }
+    // } else {
+    // geoLocation.lat = latitude;
+    // geoLocation.lng = longitude;
 
-  //creating a functionality that will upload all images to the database
-  async function storeImage(image) {
-    return new Promise((resolve, reject) => {
-      const storage = getStorage();
-      const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
-      const storageRef = ref(storage, filename);
-      const uploadTask = uploadBytesResumable(storageRef, image);
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
+    //creating a functionality that will upload all images to the database
+    async function storeImage(image) {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+        const storageRef = ref(storage, filename);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused');
+                break;
+              case 'running':
+                console.log('Upload is running');
+                break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
           }
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-          reject(error);
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            resolve(downloadURL);
-          });
-        }
-      );
+        );
+      });
+    }
+    // async function storeImage(image) {
+    //   return new Promise((resolve, reject) => {
+    //     const storage = getStorage();
+    //     const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+    //     const storageRef = ref(storage, filename);
+    //     const uploadTask = uploadBytesResumable(storageRef, image);
+
+    //     uploadTask.on(
+    //       'state_changed',
+    //       (snapshot) => {
+    //         // Observe state change events such as progress, pause, and resume
+    //         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+    //         const progress =
+    //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //         console.log('Upload is ' + progress + '% done');
+    //         switch (snapshot.state) {
+    //           case 'paused':
+    //             console.log('Upload is paused');
+    //             break;
+    //           case 'running':
+    //             console.log('Upload is running');
+    //             break;
+    //         }
+    //       },
+    //       (error) => {
+    //         // Handle unsuccessful uploads
+    //         reject(error);
+    //       }
+    //     );
+
+    //     uploadTask.then(
+    //       () => {
+    //         // Handle successful uploads on complete
+    //         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+    //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+    //           resolve(downloadURL);
+    //         });
+    //       },
+    //       (error) => {
+    //         // Handle unsuccessful uploads
+    //         reject(error);
+    //       }
+    //     );
+    //   });
+    // }
+
+    //generate url for the images
+    const imgUrls = await Promise.all(
+      [...images].map((image) => storeImage(image))
+    ).catch((error) => {
+      setLoading(false);
+      toast.error('images not uploaded');
+      return;
     });
-  }
-  // async function storeImage(image) {
-  //   return new Promise((resolve, reject) => {
-  //     const storage = getStorage();
-  //     const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
-  //     const storageRef = ref(storage, filename);
-  //     const uploadTask = uploadBytesResumable(storageRef, image);
+    console.log(imgUrls);
 
-  //     uploadTask.on(
-  //       'state_changed',
-  //       (snapshot) => {
-  //         // Observe state change events such as progress, pause, and resume
-  //         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-  //         const progress =
-  //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-  //         console.log('Upload is ' + progress + '% done');
-  //         switch (snapshot.state) {
-  //           case 'paused':
-  //             console.log('Upload is paused');
-  //             break;
-  //           case 'running':
-  //             console.log('Upload is running');
-  //             break;
-  //         }
-  //       },
-  //       (error) => {
-  //         // Handle unsuccessful uploads
-  //         reject(error);
-  //       }
-  //     );
+    //create another instance of formData
+    const formDataCopy = {
+      ...formData, //instance of formdata state
+      imgUrls,
+      geoLocation,
+      timestamp: serverTimestamp(),
+      userRef: auth.currentUser.uid, //getting info of the user
+    };
+    delete formDataCopy.images;
+    !formDataCopy.offer && delete formDataCopy.discountedPrice;
+    delete formDataCopy.latitude;
+    delete formDataCopy.longitude;
 
-  //     uploadTask.then(
-  //       () => {
-  //         // Handle successful uploads on complete
-  //         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-  //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-  //           resolve(downloadURL);
-  //         });
-  //       },
-  //       (error) => {
-  //         // Handle unsuccessful uploads
-  //         reject(error);
-  //       }
-  //     );
-  //   });
-  // }
-
-  //generate url for the images
-  const imgUrls = await Promise.all(
-    [...images].map((image) => storeImage(image))
-  ).catch((error) => {
+    const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
     setLoading(false);
-    toast.error('images not uploaded');
-    return;
-  });
-  console.log(imgUrls);
+    toast.success('listing created');
+    Navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+  }
 
-  //create another instance of formData
-  const formDataCopy = {
-    ...formData, //instance of formdata state
-    imgUrls,
-    geoLocation,
-    timestamp: serverTimestamp(),
-    userRef: auth.currentUser.uid, //getting info of the user
-  };
-  delete formDataCopy.images;
-  !formDataCopy.offer && delete formDataCopy.discountedPrice;
-  delete formDataCopy.latitude;
-  delete formDataCopy.longitude;
-
-  const docRef = await addDoc(collection(db, 'listings'),formDataCopy);
-  setLoading(false);
-  toast.success('listing created');
-  Navigate(`/category/${formDataCopy.type}/${docRef.id}`);
-}
-
-
-   if (Loading) {
-     return <Spinner />;
-   }
+  if (Loading) {
+    return <Spinner />;
+  }
   
   return (
     <main className="max-w-md px-2 mx-auto">
@@ -540,16 +539,16 @@ async function onSubmit(e){
                 focus:border-slate-600"
            '
           />
-          </div>
-          <button 
-            type="submit"
-            className="mb-6 w-full px-7 py-3 bg-blue-600 text-white
+        </div>
+        <button
+          type="submit"
+          className="mb-6 w-full px-7 py-3 bg-blue-600 text-white
           font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg
           focus:bg-blue-700 focus:shadow-lg active:bg-red-800
           active:shadow-lg transition duration-150 ease-out mt-6"
-          >
-            Create Listing
-          </button>
+        >
+          Create Listing
+        </button>
       </form>
     </main>
   );
